@@ -1,10 +1,10 @@
 import FSInterface from "../interfaces/fs";
 import crypto from "crypto";
-
+import { fileDataType, hashMapType } from "../types";
 class FS implements FSInterface {
   directory: string;
-  fileData: { [filename: string]: string };
-  hashMap: { [hashedContent: string]: string };
+  fileData: fileDataType;
+  hashMap: hashMapType;
 
   constructor(directory: string) {
     this.directory = directory;
@@ -22,7 +22,6 @@ class FS implements FSInterface {
     if (this.fileData[filename]) {
       const hashKey = this.fileData[filename];
       const content = this.hashMap[hashKey];
-
       return content;
     }
     return `There are no files with the filename ${filename}!` 
