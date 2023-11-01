@@ -1,5 +1,5 @@
 interface FSInterface {
-  store: (filename: string, content: string) => void,
-  get: (filename: string) => string
+  store: (filename: string, content: string) => Promise<void>;
+  get: (filename: string) => string;
 }
-export default FSInterface
+export default FSInterface;

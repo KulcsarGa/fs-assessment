@@ -1,30 +1,35 @@
 import FSInterface from "../interfaces/fs";
 import crypto from "crypto";
-import { fileDataType, hashMapType } from "../types";
+import fs from "fs";
+import { fileDataType } from "../types";
 class FS implements FSInterface {
   directory: string;
   fileData: fileDataType;
-  hashMap: hashMapType;
 
   constructor(directory: string) {
+    if (!fs.existsSync(directory)) {
+      fs.mkdirSync(directory);
+    }
     this.directory = directory;
     this.fileData = {};
-    this.hashMap = {};
   }
-  store(filename: string, content: string): void {
+  async store(filename: string, content: string): Promise<void> {
     const hashedContent = this.generateHash(content);
-    if (!this.hashMap[hashedContent]) {
-      this.hashMap[hashedContent] = content;
+    const storedHashes = Object.keys(this.fileData).map((key) => {
+      return this.fileData[key];
+    });
+    if (!storedHashes.find((hash) => hash === hashedContent)) {
+      await fs.promises.writeFile(`${this.directory}/${hashedContent}`, content)
     }
     this.fileData[filename] = hashedContent;
   }
   get(filename: string): string {
     if (this.fileData[filename]) {
       const hashKey = this.fileData[filename];
-      const content = this.hashMap[hashKey];
+      const content = fs.readFileSync(`${this.directory}/${hashKey}`, "utf-8")
       return content;
     }
-    return `There are no files with the filename ${filename}!` 
+    return `There are no files with the filename ${filename}!`;
   }
 
   private generateHash(content: string) {
