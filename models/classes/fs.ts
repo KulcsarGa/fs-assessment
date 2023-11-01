@@ -1,4 +1,4 @@
-
+import FSInterface from '../interfaces/fs'
 
 class FS implements FSInterface {
 
@@ -10,3 +10,5 @@ class FS implements FSInterface {
     return filename
   }
 }
+
+export default FS
